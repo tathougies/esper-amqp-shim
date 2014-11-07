@@ -1,0 +1,10 @@
+create schema StockTick(analysisId Int, price Double)
+create schema MovingAverage(analysisId Int, ma Double)
+create schema LessThan(analysisId Int, isLessThan Bool)
+insert into MovingAverage select 3 as analysisId, avg(price) as ma from StockTick.win:time(5 min) where analysisId=1
+insert into MovingAverage select 4 as analysisId, avg(price) as ma from StockTick.win:time(5 min) where analysisId=2
+insert into LessThan select 5 as analysisId, true as isLessThan from MovingAverage.std:unique(analysisId) as a1, MovingAverage.std:unique(analysisId) as a2 where a1.ma < a2.ma and a1.analysisId=3 and a2.analysisId=4
+
+create dataflow ConsoleOutput EventBusSource -> stream.one<LessThan> {} LogSink(stream.one) { format: 'json', layout:'%t [%e]', log: false, linefeed:true}
+create dataflow StockTickConsoleOutput EventBusSource -> stream.one<StockTick> {} LogSink(stream.one) { format: 'json', layout:'%t [%e]', log: false, linefeed:true}
+create dataflow MAConsoleOutput EventBusSource -> stream.one<MovingAverage> {} LogSink(stream.one) { format: 'json', layout:'%t [%e]', log: false, linefeed:true}

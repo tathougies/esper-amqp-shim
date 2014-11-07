@@ -1,0 +1,11 @@
+<esper-configuration>
+  <plugin-loader name="EsperIOHTTPAdapter" 
+      class-name="com.espertech.esperio.http.EsperIOHTTPAdapterPlugin">
+    <config-xml>
+      <esperio-http-configuration>
+	<service name="myservice" port="80" nio="false"/>
+	<get service="myservice" pattern="*"/>
+      </esperio-http-configuration>
+    </config-xml>
+  </plugin-loader>
+</esper-configuration>
